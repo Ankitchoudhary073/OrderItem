@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderitem-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: OrderItem
+  template:
+    metadata:
+      labels:
+        app: OrderItem
+    spec:
+      containers:
+      - name: orderitem
+        image: truyum.azurecr.io/orderitemrepos:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: orderitemsn
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderitem
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: OrderItem
