@@ -17,10 +17,12 @@ using Newtonsoft.Json;
 
 namespace OrderItem.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
+        public static HttpClient client = new HttpClient();
         // GET: api/<OrderController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -33,6 +35,20 @@ namespace OrderItem.Controllers
         public string Get(int id)
         {
             return "value";
+        }
+        [HttpPost("{menuItemid}")]
+        public Cart Post(int menuItemid)
+        {
+            string token = GetToken("http://52.184.92.234/api/Token");
+
+           Cart orderItem = new Cart();
+            orderItem.Id = 1;
+            orderItem.userId = 1;
+            orderItem.menuItemId = menuItemid;
+            orderItem.menuItemName = getMenuName(menuItemid, token).ToString();
+            return orderItem;
+
+            
         }
         static string GetToken(string url)
         {
@@ -47,20 +63,9 @@ namespace OrderItem.Controllers
                 return details.token;
             }
         }
+        
         // POST api/<OrderController>
-        [HttpPost("{menuItemid}")]
-        public Cart Post(int menuItemid)
-        {
-            string token = GetToken("http://52.184.92.234/api/Token");
-            var cart = new Cart()
-            {
-                Id = 1,
-                userId = 1,
-                menuItemId = menuItemid,
-                menuItemName = getMenuName(menuItemid,token).ToString()
-            };
-            return cart;
-        }
+        
 
         private string getMenuName(int menuItemid,string token)
         {
@@ -69,19 +74,15 @@ namespace OrderItem.Controllers
             {
                 client.BaseAddress = new Uri("http://52.184.92.234/");
                 client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer" + token);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = new HttpResponseMessage();
                 response=client.GetAsync("api/MenuItem/"+menuItemid).Result;
-                if(response.IsSuccessStatusCode)
-                {
+                
                     string name1 = response.Content.ReadAsStringAsync().Result;
                     name = JsonConvert.DeserializeObject<string>(name1);
-                }
-                else
-                {
-                    name = null;
-                }
+                
+                
             }
             return name;
 
