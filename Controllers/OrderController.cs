@@ -39,7 +39,7 @@ namespace OrderItem.Controllers
         [HttpPost("{menuItemid}")]
         public Cart Post(int menuItemid)
         {
-            string token = GetToken("http://52.184.92.234/api/Token");
+            string token = GetToken("http://20.189.113.90/api/Token");
 
            Cart orderItem = new Cart();
             orderItem.Id = 1;
@@ -72,7 +72,7 @@ namespace OrderItem.Controllers
             string name;
             using (var client=new HttpClient())
             {
-                client.BaseAddress = new Uri("http://52.184.92.234/");
+                client.BaseAddress = new Uri("http://20.189.113.90/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
